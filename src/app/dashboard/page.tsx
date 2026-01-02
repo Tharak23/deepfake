@@ -1,15 +1,14 @@
-import DashboardLayout from "@/components/layouts/DashboardLayout";
-import VerificationBadge from "@/components/dashboard/VerificationBadge";
+'use client';
 
-export const metadata = {
-  title: "Dashboard | DeepFake Detection Platform",
-  description: "Your personal dashboard for deepfake detection and verification",
-};
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import VerificationBadge from "@/components/dashboard/VerificationBadge";
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="min-h-screen bg-gradient-to-b from-[#0a0a0a] to-[#0f172a]">
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -113,6 +112,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+      <Footer />
+    </main>
   );
 } 

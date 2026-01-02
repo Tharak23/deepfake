@@ -9,7 +9,17 @@ import { motion } from 'framer-motion';
 const VerificationBadge: FC = () => {
   const { user } = useAuth();
   
-  if (!user) return null;
+  // Return a default view if no user (for frontend-only mode)
+  if (!user) {
+    return (
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+        <h2 className="text-xl font-semibold text-white mb-4">Researcher Verification</h2>
+        <div className="text-gray-400 text-sm">
+          <p>Verification status will appear here when available.</p>
+        </div>
+      </div>
+    );
+  }
   
   // Determine badge color based on verification status
   const badgeColor = user.isVerified 
