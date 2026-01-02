@@ -26,10 +26,7 @@ export async function GET(
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
     
-    // Check privacy - private files can only be accessed by the owner
-    if (file.isPrivate && (!session || session.user.id !== file.userId)) {
-      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
-    }
+    // No authentication required - allow access to all files (privacy check removed)
     
     // Update view count
     await File.findByIdAndUpdate(params.id, { $inc: { views: 1 } });
@@ -49,7 +46,7 @@ export async function GET(
         downloads: file.downloads,
         views: file.views + 1, // Increment locally for immediate feedback
         isPrivate: file.isPrivate,
-        isOwner: session?.user?.id === file.userId,
+        isOwner: false, // No ownership check without authentication
         createdAt: file.createdAt,
         updatedAt: file.updatedAt,
       }

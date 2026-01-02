@@ -8,11 +8,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check authentication
+    // No authentication required - allow anyone to download files
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const fileId = params.id;
     if (!fileId) {

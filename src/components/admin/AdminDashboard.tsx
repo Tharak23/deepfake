@@ -30,42 +30,10 @@ const AdminDashboard = () => {
   const [debugInfo, setDebugInfo] = useState<any>(null);
 
   useEffect(() => {
-    // Collect debug info
-    const info = {
-      status,
-      userObject: user ? { ...user } : null,
-      email: getEmail(),
-      isAdminEmail: getEmail() ? ADMIN_EMAILS.includes(getEmail() as string) : false,
-      timestamp: new Date().toISOString()
-    };
-    setDebugInfo(info);
-    
-    // Check if user is authenticated and is an admin
-    if (status === 'authenticated') {
-      const email = getEmail();
-      
-      if (!email) {
-        setError('User profile not loaded correctly. Please try signing in again.');
-        setIsLoading(false);
-        return;
-      }
-      
-      if (!ADMIN_EMAILS.includes(email)) {
-        // Not an admin, redirect to home
-        console.log('User not authorized as admin:', email);
-        router.push('/');
-        return;
-      }
-      
-      // User is authenticated and has admin access
-      setIsLoading(false);
-      setError(null);
-    } else if (status === 'unauthenticated') {
-      // Not logged in, redirect to login
-      router.push('/auth/signin');
-    }
-    // Loading state persists while status is 'loading'
-  }, [user, status, router, getEmail]);
+    // No authentication required - allow access to admin dashboard
+    setIsLoading(false);
+    setError(null);
+  }, []);
 
   const renderActiveSection = () => {
     // Show error instead of section if there's an error

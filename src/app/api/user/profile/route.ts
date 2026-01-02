@@ -20,21 +20,22 @@ export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
+    // No authentication required - return empty/default profile if not authenticated
     if (!session || !session.user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return NextResponse.json({
+        user: null,
+        message: 'No user session found'
+      });
     }
     
     // Get email - may come from different places depending on auth provider
     const userEmail = getUserEmail(session.user);
     
     if (!userEmail) {
-      return NextResponse.json(
-        { error: 'User email not found in session' },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        user: null,
+        message: 'User email not found in session'
+      });
     }
     
     // Connect to database

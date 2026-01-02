@@ -138,16 +138,21 @@ export async function uploadFile(
     throw new Error('Failed to create file record in database: ' + (dbError instanceof Error ? dbError.message : String(dbError)));
   }
   
-  // Update user's contributions if applicable
+  // Update user's contributions if applicable (skip for anonymous users)
   try {
-    if (['papers', 'datasets', 'experiments', 'images'].includes(type)) {
+    if (['papers', 'datasets', 'experiments', 'images'].includes(type) && userId !== 'anonymous') {
       console.log('Updating user contributions...');
-      await User.findByIdAndUpdate(
-        userId,
-        { $push: { [`contributions.${type}`]: fileDoc._id } },
-        { new: true }
-      );
-      console.log('User contributions updated');
+      const user = await User.findById(userId);
+      if (user) {
+        await User.findByIdAndUpdate(
+          userId,
+          { $push: { [`contributions.${type}`]: fileDoc._id } },
+          { new: true }
+        );
+        console.log('User contributions updated');
+      } else {
+        console.log('User not found, skipping contribution update');
+      }
     }
   } catch (userError) {
     console.error('Error updating user contributions (non-fatal):', userError);

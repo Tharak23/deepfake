@@ -12,13 +12,8 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    // Check if user is authenticated
-    if (!session) {
-      return NextResponse.json(
-        { error: 'You must be signed in to upload files' },
-        { status: 401 }
-      );
-    }
+    // No authentication required - use anonymous user ID if not authenticated
+    const userId = session?.user?.id || 'anonymous';
     
     // Get form data
     const formData = await req.formData();
@@ -54,7 +49,7 @@ export async function POST(req: NextRequest) {
     }
     
     // Upload the file using our storage utility
-    const result = await uploadFile(file, type, session.user.id);
+    const result = await uploadFile(file, type, userId);
     
     return NextResponse.json({
       url: result.url,

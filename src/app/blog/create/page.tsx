@@ -23,17 +23,10 @@ export default function CreateBlogPostPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Check if user is authenticated and has blog posting enabled
+  // No authentication required - allow access to blog create page
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin?callbackUrl=/blog/create');
-      return;
-    }
-
-    if (status === 'authenticated' && user && !user.blogEnabled) {
-      router.push('/profile');
-    }
-  }, [user, status, router]);
+    // Page is accessible without authentication
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

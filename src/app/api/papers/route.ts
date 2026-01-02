@@ -7,16 +7,7 @@ import Paper from '@/models/Paper';
 // GET /api/papers - Get all papers with pagination and filtering
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    // Check if user is authenticated
-    if (!session) {
-      return NextResponse.json(
-        { error: 'You must be signed in to view papers' },
-        { status: 401 }
-      );
-    }
-    
+    // No authentication required - allow anyone to view papers
     await dbConnect();
     
     const { searchParams } = new URL(req.url);

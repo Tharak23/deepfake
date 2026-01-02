@@ -12,14 +12,11 @@ export async function POST(request: Request) {
   try {
     console.log('File upload request received');
     
-    // Check authentication
+    // No authentication required - use anonymous user ID if not authenticated
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      console.error('Authentication error: No valid session');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const userId = session?.user?.id || 'anonymous';
     
-    console.log('User authenticated:', session.user.id);
+    console.log('User ID:', userId);
 
     // Parse the request
     let formData;
@@ -109,7 +106,7 @@ export async function POST(request: Request) {
     // Upload file and store in MongoDB
     let result;
     try {
-      result = await uploadFile(file, type, session.user.id, metadata);
+      result = await uploadFile(file, type, userId, metadata);
       console.log('File uploaded successfully:', result.id);
     } catch (uploadError) {
       console.error('Error in uploadFile function:', uploadError);
@@ -123,11 +120,14 @@ export async function POST(request: Request) {
     // Update user's contributions
     if (type === 'papers' || type === 'datasets' || type === 'experiments') {
       try {
-        await User.findByIdAndUpdate(
-          session.user.id,
-          { $push: { [`contributions.${type}`]: result.id } },
-          { new: true }
-        );
+        // Only update user contributions if user is authenticated
+        if (session?.user?.id) {
+          await User.findByIdAndUpdate(
+            userId,
+            { $push: { [`contributions.${type}`]: result.id } },
+            { new: true }
+          );
+        }
         console.log('User contributions updated');
       } catch (userError) {
         console.error('Error updating user contributions:', userError);

@@ -26,21 +26,12 @@ export default function VerificationRequestPage() {
   const [fileError, setFileError] = useState('');
   
   useEffect(() => {
-    // Redirect to login if not authenticated
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin?callbackUrl=/verification-request');
-    }
-    
-    // If user is already verified, redirect to profile
-    if (user?.role === 'verified_researcher') {
-      router.push('/profile');
-    }
-    
+    // No authentication required - allow access to verification request page
     // If user has 5 or more badges, show a message suggesting they refresh for automatic verification
     if (user?.badgesCount && user.badgesCount >= 5) {
       setSuccess('You have 5 or more badges! You should be automatically verified as a researcher. Please refresh the page or try again later.');
     }
-  }, [user, status, router]);
+  }, [user]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

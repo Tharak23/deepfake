@@ -31,10 +31,8 @@ export default function ProfilePage() {
     console.log("Profile page - Auth status:", status);
     console.log("Profile page - User data:", user);
     
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin?callbackUrl=/profile');
-    }
-
+    // No authentication required - allow access to profile page
+    // If user data is available, populate the form
     if (user) {
       setName(user.name || '');
       setBio(user.bio || '');
@@ -46,7 +44,7 @@ export default function ProfilePage() {
       const newUserCheck = !user.bio || !user.specialization;
       setIsNewUser(newUserCheck);
     }
-  }, [user, status, router]);
+  }, [user, status]);
 
   // Force refresh user profile when component mounts
   useEffect(() => {
@@ -165,19 +163,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (status === 'unauthenticated') {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#0a0a0a] to-[#0f172a] flex flex-col items-center justify-center">
-        <p className="text-white mb-4">Please sign in to view your profile</p>
-        <button 
-          onClick={() => router.push('/auth/signin?callbackUrl=/profile')}
-          className="btn btn-primary"
-        >
-          Sign In
-        </button>
-      </div>
-    );
-  }
+  // No authentication required - allow access to profile page
 
   return (
     <main>

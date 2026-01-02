@@ -12,16 +12,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    // Check if user is authenticated
-    if (!session) {
-      return NextResponse.json(
-        { error: 'You must be signed in to view this paper' },
-        { status: 401 }
-      );
-    }
-    
+    // No authentication required - allow anyone to view papers
     await dbConnect();
     
     const { id } = params;
@@ -68,13 +59,8 @@ export async function PUT(
   try {
     const session = await getServerSession(authOptions);
     
-    // Check if user is authenticated
-    if (!session) {
-      return NextResponse.json(
-        { error: 'You must be signed in to update a paper' },
-        { status: 401 }
-      );
-    }
+    // No authentication required - use anonymous user ID if not authenticated
+    const userId = session?.user?.id || 'anonymous';
     
     await dbConnect();
     

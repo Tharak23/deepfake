@@ -36,17 +36,8 @@ export async function GET(request: Request) {
       queryObject.$text = { $search: query };
     }
     
-    // Privacy filtering
-    if (session?.user?.id) {
-      // If user is authenticated, they can see their own private files and all public files
-      queryObject.$or = [
-        { isPrivate: false }, // Public files visible to everyone
-        { userId: session.user.id } // User's own files (including private)
-      ];
-    } else {
-      // Unauthenticated users can only see public files
-      queryObject.isPrivate = false;
-    }
+    // No authentication required - show all public files, or all files if no privacy check
+    queryObject.isPrivate = false; // Show only public files to everyone
     
     // Execute query
     const files = await File.find(queryObject)
@@ -66,7 +57,7 @@ export async function GET(request: Request) {
       mimeType: file.mimeType,
       tags: file.tags,
       isPrivate: file.isPrivate,
-      isOwner: session?.user?.id === file.userId,
+      isOwner: false, // No ownership check without authentication
       createdAt: file.createdAt,
     }));
     
